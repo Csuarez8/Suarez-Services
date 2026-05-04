@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre las Pruebas · Interpretación Maryland</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0A1628;
+    --charcoal: #0E1E38;
+    --dark: #142448;
+    --amber: #D4A820;
+    --amber-pale: rgba(200,144,10,0.12);
+    --amber-bright: #E8C030;
+    --red: #C8A050;
+    --red-pale: rgba(200,160,80,0.08);
+    --white: #FFFFFF;
+    --paper: #F7F4EF;
+    --muted: rgba(255,255,255,0.75);
+    --border-dark: rgba(255,255,255,0.15);
+    --border-light: #E0DBD3;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Barlow', sans-serif; background:var(--ink); color:var(--white); }
+
+  /* FLAG STRIPE */
+  .flag-stripe {
+    height:5px;
+    background: repeating-linear-gradient(90deg,
+      #0A1628 0px,#0A1628 25%,#D4A820 25%,#D4A820 50%,#C8A050 50%,#C8A050 75%,#C8D0E0 75%,#C8D0E0 100%) 0px, var(--ink) 25%,
+      var(--amber) 25%, var(--amber) 50%,
+      var(--red) 50%, var(--red) 75%,
+      #E8E4DC 75%, #E8E4DC 100%
+    );
+  }
+
+  /* NAV */
+  nav {
+    position:fixed; top:5px; width:100%; z-index:100;
+    background:rgba(13,11,9,0.97); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-dark);
+    padding:0.9rem 2.5rem; display:flex; justify-content:space-between; align-items:center;
+  }
+  .nav-logo { font-family:'Barlow Condensed',sans-serif; font-size:1.15rem; font-weight:800; color:var(--white); text-decoration:none; letter-spacing:0.06em; text-transform:uppercase; }
+  .nav-logo span { color:var(--amber); }
+  .nav-links { display:flex; gap:2rem; list-style:none; align-items:center; }
+  .nav-links a { text-decoration:none; color:var(--muted); font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:500; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--amber); }
+  .nav-cta { background:var(--amber); color:var(--ink); padding:0.55rem 1.2rem; font-family:'Barlow Condensed',sans-serif; font-size:0.82rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; }
+  .nav-cta:hover { background:var(--amber-bright); }
+
+  /* HERO */
+  .hero {
+    min-height:100vh; padding:8rem 2.5rem 5rem;
+    display:grid; grid-template-columns:1fr 420px; gap:4rem;
+    align-items:center; max-width:1100px; margin:0 auto;
+  }
+  .hero-eyebrow { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.5rem; }
+  .eyebrow-line { width:28px; height:2px; background:var(--amber); }
+  .eyebrow-text { font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); font-weight:600; }
+  .hero h1 {
+    font-family:'Barlow Condensed',sans-serif; font-weight:800;
+    font-size:clamp(2.8rem,5.5vw,5rem); line-height:0.95;
+    text-transform:uppercase; letter-spacing:0.01em; color:var(--white);
+    margin-bottom:1.5rem;
+  }
+  .hero h1 .amber { color:var(--amber); }
+  .hero h1 .red { color:var(--red); }
+  .hero-desc { color:var(--muted); font-size:1.05rem; line-height:1.8; max-width:480px; margin-bottom:0.75rem; font-weight:300; }
+  .hero-personal { color:rgba(232,162,0,0.75); font-size:0.95rem; line-height:1.7; max-width:460px; font-style:italic; font-weight:300; margin-bottom:2.5rem; }
+  .hero-btns { display:flex; gap:0.75rem; flex-wrap:wrap; }
+  .btn-amber { background:var(--amber); color:var(--ink); padding:0.9rem 2rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; border:none; cursor:pointer; transition:background 0.2s; }
+  .btn-amber:hover { background:var(--amber-bright); }
+  .btn-outline { border:1.5px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.7); padding:0.9rem 2rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; transition:all 0.2s; }
+  .btn-outline:hover { border-color:var(--amber); color:var(--amber); }
+
+  /* HERO PHOTO */
+  .hero-photo-wrap {
+    position:relative; height:520px;
+  }
+  .hero-photo-wrap::before {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(to top, var(--ink) 0%, transparent 40%);
+    z-index:2;
+  }
+  .hero-photo-wrap::after {
+    content:''; position:absolute; top:-8px; right:-8px; bottom:8px; left:8px;
+    border:1px solid rgba(232,162,0,0.25); z-index:0;
+  }
+  .hero-photo {
+    width:100%; height:100%; object-fit:cover; object-position:center 15%;
+    position:relative; z-index:1;
+    filter:contrast(1.05) brightness(0.92);
+  }
+  .hero-photo-badge {
+    position:absolute; bottom:1.5rem; left:1.5rem; right:1.5rem; z-index:3;
+    display:flex; justify-content:space-between; align-items:flex-end;
+  }
+  .photo-name { font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); }
+  .photo-title { font-size:0.78rem; color:var(--amber); letter-spacing:0.08em; font-weight:400; margin-top:0.2rem; }
+  .photo-cert { background:var(--amber); color:var(--ink); padding:0.35rem 0.75rem; font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap; }
+
+  @media (max-width:820px) {
+    .hero { grid-template-columns:1fr; }
+    .hero-photo-wrap { height:380px; order:-1; }
+  }
+
+  /* TRUST BAR */
+  .trust-bar {
+    background:var(--charcoal); border-top:1px solid var(--border-dark); border-bottom:1px solid var(--border-dark);
+    padding:1.2rem 2.5rem; display:flex; justify-content:center; gap:3.5rem; flex-wrap:wrap;
+  }
+  .trust-item { display:flex; align-items:center; gap:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.82rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+  .trust-dot { width:6px; height:6px; background:var(--amber); flex-shrink:0; }
+  .trust-dot.r { background:var(--red); }
+
+  /* SECTIONS */
+  section { padding:5.5rem 2.5rem; }
+  .container { max-width:1040px; margin:0 auto; }
+  .eyebrow { display:flex; align-items:center; gap:0.7rem; margin-bottom:0.75rem; }
+  .e-line { width:24px; height:2px; background:var(--amber); flex-shrink:0; }
+  .e-line.r { background:var(--red); }
+  .eyebrow span { font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); font-weight:600; }
+  .section-h { font-family:'Barlow Condensed',sans-serif; font-size:clamp(2rem,3.5vw,3rem); font-weight:800; text-transform:uppercase; letter-spacing:0.02em; color:var(--white); margin-bottom:1rem; line-height:1; }
+  .section-p { color:var(--muted); font-size:0.95rem; line-height:1.8; max-width:520px; margin-bottom:3rem; font-weight:300; }
+
+  /* SERVICES */
+  .services { background:var(--charcoal); }
+  .services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1px; background:rgba(255,255,255,0.05); }
+  .svc { background:var(--dark); padding:2.5rem; position:relative; overflow:hidden; transition:background 0.25s; }
+  .svc-top { position:absolute; top:0; left:0; right:0; height:3px; }
+  .svc-top.a { background:var(--amber); }
+  .svc-top.r { background:var(--red); }
+  .svc-top.w { background:rgba(255,255,255,0.2); }
+  .svc-n { font-family:'Barlow Condensed',sans-serif; font-size:3.5rem; font-weight:800; color:rgba(255,255,255,0.06); line-height:1; margin-bottom:0.5rem; transition:color 0.25s; }
+  .svc:hover { background:#1E1A16; }
+  .svc:hover .svc-n { color:rgba(232,162,0,0.15); }
+  .svc h3 { font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--white); margin-bottom:0.75rem; }
+  .svc p { color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; }
+  .svc-link { display:inline-block; margin-top:1.25rem; font-family:'Barlow Condensed',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber); text-decoration:none; border-bottom:1px solid rgba(200,144,10,0.3); padding-bottom:1px; transition:border-color 0.2s, color 0.2s; }
+  .svc-link:hover { color:var(--amber-bright); border-color:var(--amber); }
+  .svc:hover .svc-link { color:var(--amber-bright); }
+  .svc-price { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; color:var(--amber); letter-spacing:0.02em; line-height:1; margin:1rem 0 0.25rem; }
+  .svc-price-label { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:0.75rem; }
+  .svc-price.free { color:#4CAF50; }
+  .svc:hover .svc-price { color:var(--amber-bright); }
+  .svc:hover .svc-price.free { color:#81C784; }
+  .svc-free { background:var(--amber); color:var(--ink); font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:0.15rem 0.5rem; margin-left:0.3rem; vertical-align:middle; }
+
+  /* PROCESO */
+  .proceso { background:var(--ink); }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1px; background:rgba(255,255,255,0.05); margin-top:3rem; }
+  .step { background:var(--charcoal); padding:2rem; border-top:3px solid transparent; transition:border-color 0.25s; }
+  .step:nth-child(odd):hover { border-color:var(--amber); }
+  .step:nth-child(even):hover { border-color:var(--red); }
+  .step-n { font-family:'Barlow Condensed',sans-serif; font-size:2.5rem; font-weight:800; color:var(--amber); line-height:1; margin-bottom:0.75rem; opacity:0.7; }
+  .step h4 { font-family:'Barlow Condensed',sans-serif; font-size:0.95rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--white); margin-bottom:0.5rem; }
+  .step p { color:var(--muted); font-size:0.87rem; line-height:1.65; font-weight:300; }
+  .proceso-cta {
+    margin-top:3rem; border-left:3px solid var(--amber);
+    padding:1.75rem 2rem; background:var(--amber-pale);
+    display:flex; justify-content:space-between; align-items:center; gap:2rem; flex-wrap:wrap;
+  }
+  .proceso-cta blockquote { font-size:1rem; color:rgba(255,255,255,0.7); line-height:1.75; font-style:italic; font-weight:300; }
+  .proceso-cta cite { display:block; margin-top:0.5rem; font-style:normal; font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); opacity:0.8; }
+
+  /* WHY */
+  .why { background:var(--charcoal); }
+  .why-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1px; background:rgba(255,255,255,0.05); }
+  .why-card { background:var(--dark); padding:2rem; border-bottom:3px solid transparent; transition:all 0.2s; }
+  .why-card:nth-child(odd):hover { border-color:var(--amber); background:var(--amber-pale); }
+  .why-card:nth-child(even):hover { border-color:var(--red); background:var(--red-pale); }
+  .why-icon { font-size:1.4rem; margin-bottom:0.75rem; }
+  .why-card h4 { font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--white); margin-bottom:0.5rem; }
+  .why-card p { color:var(--muted); font-size:0.87rem; line-height:1.65; font-weight:300; }
+
+  /* ABOUT — personal, first person */
+  .about { background:var(--ink); }
+  .about-inner { display:grid; grid-template-columns:1fr 1.1fr; gap:5rem; align-items:start; }
+  .about-photo-wrap { position:relative; }
+  .about-photo {
+    width:100%; aspect-ratio:3/4; object-fit:cover; object-position:center 15%;
+    filter:contrast(1.05) brightness(0.92);
+  }
+  .about-photo-frame {
+    position:absolute; bottom:-10px; right:-10px;
+    width:100%; height:100%; border:1.5px solid rgba(232,162,0,0.3); z-index:-1;
+  }
+  .about-flag-bar {
+    height:4px; display:flex; margin-top:0;
+  }
+  .about-flag-bar div { flex:1; }
+  .about-flag-bar .b { background:var(--ink); border-top:1px solid rgba(255,255,255,0.1); }
+  .about-flag-bar .a { background:var(--amber); }
+  .about-flag-bar .r { background:var(--red); }
+  .about-flag-bar .w { background:rgba(232,228,220,0.5); }
+  .about-text .intro {
+    font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:600;
+    color:var(--amber); letter-spacing:0.04em; margin-bottom:1.5rem; font-style:italic;
+  }
+  .about-text p { color:var(--muted); font-size:0.97rem; line-height:1.85; font-weight:300; margin-bottom:1rem; }
+  .about-text p strong { color:var(--white); font-weight:500; }
+  .about-credentials { display:flex; flex-direction:column; gap:0.5rem; margin:1.5rem 0; }
+  .cred { display:flex; align-items:center; gap:0.75rem; font-size:0.85rem; color:rgba(255,255,255,0.55); }
+  .cred-dot { width:5px; height:5px; background:var(--amber); flex-shrink:0; }
+  @media(max-width:700px) { .about-inner { grid-template-columns:1fr; } }
+
+  /* CONTACT */
+  .contact { background:var(--charcoal); border-top:1px solid var(--border-dark); }
+  .contact-inner { display:grid; grid-template-columns:1fr 1.4fr; gap:5rem; }
+  .contact-intro { font-family:'Barlow',sans-serif; font-size:0.97rem; color:var(--muted); line-height:1.8; font-weight:300; font-style:italic; margin-bottom:2rem; }
+  .c-item { margin-bottom:2rem; border-left:2px solid var(--amber); padding-left:1.25rem; }
+  .c-item.r { border-color:var(--red); }
+  .c-label { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.35); font-weight:600; margin-bottom:0.3rem; }
+  .c-val a { color:var(--white); text-decoration:none; font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:700; display:block; transition:color 0.2s; }
+  .c-val a:hover { color:var(--amber); }
+  .contact-form { display:flex; flex-direction:column; gap:1px; background:rgba(255,255,255,0.05); }
+  .contact-form input, .contact-form textarea {
+    background:var(--dark); border:none; border-left:2px solid transparent;
+    padding:1rem 1.2rem; color:var(--white); font-family:'Barlow',sans-serif;
+    font-size:0.9rem; outline:none; transition:all 0.2s;
+  }
+  .contact-form input:focus, .contact-form textarea:focus { border-color:var(--amber); background:#201D19; }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color:rgba(255,255,255,0.25); }
+  .contact-form textarea { height:120px; resize:vertical; }
+  @media(max-width:700px) { .contact-inner { grid-template-columns:1fr; } }
+
+  /* FOOTER */
+  .footer-flag { height:4px; display:flex; }
+  .footer-flag div { flex:1; }
+  .footer-flag .b { background:var(--ink); }
+  .footer-flag .a { background:var(--amber); }
+  .footer-flag .r { background:var(--red); }
+  .footer-flag .w { background:rgba(232,228,220,0.4); }
+  footer { background:#080706; padding:2rem 2.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .footer-logo { font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:1rem; color:var(--white); text-transform:uppercase; letter-spacing:0.06em; }
+  .footer-logo span { color:var(--amber); }
+  footer p { color:rgba(255,255,255,0.3); font-size:0.78rem; }
+
+
+  /* SOCIAL BAR */
+  .socials {
+    background:#0A1628;
+    padding:0.6rem 2.5rem;
+    position:relative; overflow:hidden;
+  }
+  .socials-bar-inner { max-width:600px; margin:0 auto; position:relative; z-index:1; }
+  .socials-divider { display:flex; align-items:center; gap:1.5rem; margin-bottom:1rem; }
+  .socials-line { flex:1; height:1px; background:rgba(255,255,255,0.3); }
+  .socials-bar-label {
+    font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:800;
+    letter-spacing:0.25em; text-transform:uppercase; color:#fff; white-space:nowrap;
+  }
+  .socials-icons { display:flex; justify-content:center; gap:1.75rem; }
+  .social-icon-btn {
+    width:42px; height:42px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; text-decoration:none;
+    background:rgba(255,255,255,0.12);
+    border:1.5px solid rgba(255,255,255,0.25);
+    transition:all 0.25s; backdrop-filter:blur(4px);
+  }
+  .social-icon-btn:hover {
+    background:#fff; color:#9A1520;
+    border-color:#fff; transform:translateY(-4px);
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  /* CHAT */
+  .chat-btn {
+    position:fixed; bottom:2rem; right:2rem; z-index:300;
+    background:var(--amber); color:var(--ink); border:none; cursor:pointer;
+    width:56px; height:56px; font-size:1.4rem;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 24px rgba(232,162,0,0.45); transition:background 0.2s;
+  }
+  .chat-btn:hover { background:var(--amber-bright); }
+  .chat-window {
+    position:fixed; bottom:5.5rem; right:2rem; width:320px; height:430px;
+    background:var(--charcoal); border:1px solid var(--border-dark);
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+    display:none; flex-direction:column; z-index:300; overflow:hidden;
+  }
+  .chat-window.open { display:flex; }
+  .chat-flag { height:3px; display:flex; }
+  .chat-flag div { flex:1; }
+  .chat-flag .b { background:var(--ink); }
+  .chat-flag .a { background:var(--amber); }
+  .chat-flag .r { background:var(--red); }
+  .chat-flag .w { background:rgba(232,228,220,0.3); }
+  .chat-header { background:var(--dark); border-bottom:1px solid var(--border-dark); padding:0.9rem 1.2rem; display:flex; justify-content:space-between; align-items:center; gap:0.75rem; }
+  .chat-header-left { display:flex; align-items:center; gap:0.75rem; }
+  .chat-avatar { width:36px; height:36px; flex-shrink:0; }
+  .chat-header-name { font-family:'Barlow Condensed',sans-serif; font-size:0.88rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--white); }
+  .chat-header-sub { font-size:0.7rem; color:var(--amber); }
+  .chat-header button { background:none; border:none; color:rgba(255,255,255,0.4); cursor:pointer; font-size:1rem; }
+  .chat-messages { flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:0.9rem; }
+  .chat-msg-wrap { display:flex; align-items:flex-end; gap:0.5rem; }
+  .chat-msg-wrap.user-wrap { flex-direction:row-reverse; }
+  .msg-avatar { width:26px; height:26px; flex-shrink:0; border-radius:50%; overflow:hidden; }
+  .msg-avatar-user { width:26px; height:26px; flex-shrink:0; border-radius:50%; background:var(--amber); display:flex; align-items:center; justify-content:center; font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:800; color:var(--ink); letter-spacing:0.05em; }
+  .msg-inner { display:flex; flex-direction:column; gap:0.2rem; max-width:78%; }
+  .msg-inner.user-inner { align-items:flex-end; }
+  .msg-name { font-family:'Barlow Condensed',sans-serif; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.4); padding:0 0.2rem; }
+  .msg-name.user-name { color:rgba(255,255,255,0.4); }
+  .chat-msg { padding:0.7rem 0.9rem; font-size:0.87rem; line-height:1.55; }
+  .chat-msg.bot { background:var(--dark); color:rgba(255,255,255,0.85); border-left:2px solid var(--amber); }
+  .chat-msg.user { background:var(--amber); color:var(--ink); font-weight:500; }
+  .chat-input-row { display:flex; border-top:1px solid var(--border-dark); }
+  .chat-input-row input { flex:1; padding:0.75rem 1rem; background:var(--dark); border:none; color:var(--white); font-family:'Barlow',sans-serif; font-size:0.85rem; outline:none; }
+  .chat-input-row input::placeholder { color:rgba(255,255,255,0.25); }
+  .chat-input-row button { background:var(--amber); color:var(--ink); border:none; padding:0 1.2rem; cursor:pointer; font-weight:700; font-size:1rem; transition:background 0.2s; }
+  .chat-input-row button:hover { background:var(--amber-bright); }
+  .typing { display:flex; gap:4px; align-items:center; }
+  .typing span { width:6px; height:6px; background:var(--amber); border-radius:50%; animation:bounce 1s infinite; opacity:0.7; }
+  .typing span:nth-child(2) { animation-delay:0.15s; }
+  .typing span:nth-child(3) { animation-delay:0.3s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  
+  body.edit-mode .edit-hint { display: block; }
+
+
+  /* SOCIALS */
+  .socials-inner { max-width:700px; margin:0 auto; text-align:center; }
+  .socials-label { font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:0.75rem; }
+  .socials-title { font-family:'Barlow Condensed',sans-serif; font-size:2rem; font-weight:800; text-transform:uppercase; color:var(--white); margin-bottom:0.75rem; }
+  .socials-sub { color:var(--muted); font-size:0.95rem; line-height:1.7; font-weight:300; margin-bottom:2.5rem; max-width:480px; margin-left:auto; margin-right:auto; }
+  .socials-grid { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:2.5rem; }
+  .social-card { display:flex; flex-direction:column; align-items:center; gap:0.75rem; padding:1.75rem 2rem; background:var(--dark); border:1px solid var(--border-dark); text-decoration:none; min-width:140px; transition:all 0.2s; position:relative; }
+  .social-card:hover { border-color:var(--amber); background:var(--charcoal); transform:translateY(-3px); }
+  .social-icon { font-size:2rem; }
+  .social-name { font-family:'Barlow Condensed',sans-serif; font-size:0.85rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--white); }
+  .social-handle { font-size:0.78rem; color:var(--muted); }
+  .social-card.wa { border-color:rgba(37,211,102,0.3); }
+  .social-card.wa:hover { border-color:#25D366; }
+  .social-card.wa .social-name { color:#25D366; }
+  .social-badge { position:absolute; top:-1px; left:50%; transform:translateX(-50%); background:#25D366; color:#000; font-family:'Barlow Condensed',sans-serif; font-size:0.65rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:0.2rem 0.6rem; white-space:nowrap; }
+  .wa-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:#25D366; color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:0.65rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:0.2rem 0.6rem; white-space:nowrap; }
+  /* proceso cta update */
+  .proceso-cta-inner { display:flex; gap:1.5rem; align-items:flex-start; }
+  .proceso-cta-icon { font-size:2.5rem; flex-shrink:0; margin-top:0.25rem; }
+  .proceso-cta-title { font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:var(--white); margin-bottom:0.5rem; }
+  .proceso-cta-text { font-size:0.92rem; color:rgba(255,255,255,0.65); line-height:1.75; font-weight:300; }
+  @media(max-width:600px) { .proceso-cta-inner { flex-direction:column; } .socials-grid { gap:1rem; } .social-card { min-width:120px; padding:1.25rem 1.25rem; } }
+
+
+  /* Anchor offset for fixed nav */
+  [id] { scroll-margin-top: 80px; }
+</style>
+</head>
+<body>
+<div class="flag-stripe"></div>
+<nav>
+  <a href="index.html" class="nav-logo">Carlos Suárez <span>· Maryland</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="guia-examen.html">Sobre las Pruebas</a></li>
+    <li><a href="educativo.html">Educativo</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+  </ul>
+  <a href="tel:6673835637" class="nav-cta">Llamar</a>
+</nav>
+
+<section style="padding:9rem 2.5rem 4rem; background:var(--charcoal);">
+  <div class="container">
+    <div class="eyebrow"><div class="e-line"></div><span>Cómo prepararte</span></div>
+    <h1 class="section-h" style="font-size:clamp(2.5rem,5vw,4rem);">Sobre las Pruebas</h1>
+    <p style="color:var(--muted); font-size:0.95rem; line-height:1.8; font-weight:300; max-width:640px; margin-top:1rem;">Esta página cubre los requisitos esenciales para el examen de conocimiento y el examen de manejo en Maryland. Si tu situación es particular o tienes preguntas que no encuentras aquí, <a href="https://wa.me/16673835637" style="color:var(--amber); text-decoration:none; font-weight:500;">contáctame directamente</a> — te oriento sin costo.</p>
+    <div style="display:inline-flex; align-items:center; gap:1rem; margin-top:1.25rem; padding:0.75rem 1.25rem; border:1px solid rgba(212,168,32,0.25); background:rgba(212,168,32,0.07);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#D4A820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span style="color:rgba(255,255,255,0.6); font-size:0.85rem; font-weight:300;">¿Buscas material de estudio para prepararte? <a href="educativo.html" style="color:var(--amber); text-decoration:none; font-weight:600;">Visita nuestra sección educativa →</a></span>
+    </div>
+  </div>
+</section>
+
+<div style="background:var(--charcoal); border-bottom:1px solid rgba(255,255,255,0.06); padding:0 2.5rem; margin-top:-4rem;">
+  <div class="container" style="display:flex; gap:0;">
+    <a href="#conocimiento" style="padding:1rem 1.5rem; font-family:'Barlow Condensed',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.5); text-decoration:none; border-bottom:2px solid transparent; transition:all 0.2s;" onmouseover="this.style.color='var(--amber)';this.style.borderBottomColor='var(--amber)'" onmouseout="this.style.color='rgba(255,255,255,0.5)';this.style.borderBottomColor='transparent'">Examen de Conocimiento</a>
+    <a href="#manejo" style="padding:1rem 1.5rem; font-family:'Barlow Condensed',sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.5); text-decoration:none; border-bottom:2px solid transparent; transition:all 0.2s;" onmouseover="this.style.color='var(--amber)';this.style.borderBottomColor='var(--amber)'" onmouseout="this.style.color='rgba(255,255,255,0.5)';this.style.borderBottomColor='transparent'">Examen de Manejo</a>
+  </div>
+</div>
+
+<section id="conocimiento" style="padding:4rem 2.5rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+  <div class="container">
+    <div class="eyebrow"><div class="e-line"></div><span>Examen teórico</span></div>
+    <h2 class="section-h">Examen de Conocimiento</h2>
+    <p class="section-p" style="max-width:700px;">
+      El examen de conocimiento evalúa tu comprensión de las leyes de tránsito, señales de tráfico y reglas de manejo en Maryland. Consta de <strong style="color:var(--white);">25 preguntas de opción múltiple</strong> y debes responder correctamente al menos <strong style="color:var(--white);">22 (88%)</strong> para aprobar. La edad mínima para tomar el examen es <strong style="color:var(--white);">15 años y 9 meses</strong>.
+    </p>
+
+    <div style="max-width:700px; margin-bottom:3rem;">
+      <p style="font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:1.25rem;">Requisitos:</p>
+
+      <!-- Req 1: ID -->
+      <div style="display:flex; gap:1.25rem; margin-bottom:1.75rem; padding-bottom:1.75rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; color:var(--amber); min-width:32px; line-height:1.2;">01</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); margin-bottom:0.4rem;">Identificación válida</div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300;">Pasaporte vigente, ID de Maryland, matrícula consular u otra identificación con foto emitida por el gobierno.</p>
+        </div>
+      </div>
+
+      <!-- Req 2: Proof of address -->
+      <div style="display:flex; gap:1.25rem; margin-bottom:1.75rem; padding-bottom:1.75rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; color:var(--amber); min-width:32px; line-height:1.2;">02</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); margin-bottom:0.4rem;">2 Pruebas de dirección</div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300;">Dos documentos que confirmen tu dirección actual en Maryland — facturas de servicios, estados de cuenta bancarios, contratos de arrendamiento, etc.</p>
+        </div>
+      </div>
+
+      <!-- Req 3: Social Security -->
+      <div style="display:flex; gap:1.25rem; margin-bottom:0;">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; color:var(--amber); min-width:32px; line-height:1.2;">03</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); margin-bottom:0.4rem;">Comprobante de Social Security</div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; margin-bottom:0.75rem;">Se acepta cualquiera de los siguientes documentos:</p>
+          <ul style="color:var(--muted); font-size:0.9rem; line-height:1.9; font-weight:300; padding-left:1.25rem;">
+            <li>Tarjeta oficial de Social Security</li>
+            <li>Documentos fiscales: W-2, 1099 ó 1040</li>
+            <li>Talones de pago (pay stubs)</li>
+            <li>Estados de beneficios (SSA-1099)</li>
+          </ul>
+          <div style="margin-top:1rem; padding:0.9rem 1.1rem; border-left:3px solid var(--amber); background:rgba(212,168,32,0.07);">
+            <span style="font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber);">Nota importante</span>
+            <p style="color:var(--muted); font-size:0.88rem; line-height:1.7; font-weight:300; margin-top:0.3rem;">Si no tienes número de Social Security, necesitarás presentar verificación de impuestos como alternativa. Contáctame directamente para orientación sobre tu caso específico.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Foreign License Exchange -->
+    <div id="licencia-extranjera" style="max-width:700px; margin-bottom:2rem; border:1px solid rgba(212,168,32,0.25); background:rgba(212,168,32,0.05);">
+      <div style="padding:0.75rem 1.25rem; background:rgba(212,168,32,0.12); border-bottom:1px solid rgba(212,168,32,0.2); display:flex; align-items:center; gap:0.75rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="#D4A820" stroke-width="1.5"/><circle cx="8.5" cy="10.5" r="2.5" stroke="#D4A820" stroke-width="1.5"/><path d="M4 17c0-2 2-3 4.5-3s4.5 1 4.5 3" stroke="#D4A820" stroke-width="1.5" stroke-linecap="round"/><path d="M14 9h4M14 12h3M14 15h2" stroke="#D4A820" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span style="font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber);">¿Tienes licencia de otro país? — Requisitos adicionales</span>
+      </div>
+      <div style="padding:1.25rem 1.5rem; display:flex; flex-direction:column; gap:0.85rem;">
+        <div style="display:flex; gap:0.75rem; align-items:flex-start;">
+          <div style="width:5px; height:5px; background:var(--amber); flex-shrink:0; margin-top:6px;"></div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; margin:0;"><strong style="color:var(--white); font-weight:500;">Licencia original</strong> — Presenta tu licencia extranjera vigente o vencida. Si no la tienes, puedes sustituirla con un <em>registro de manejo oficial</em> emitido por la autoridad de licencias de tu país.</p>
+        </div>
+        <div style="display:flex; gap:0.75rem; align-items:flex-start;">
+          <div style="width:5px; height:5px; background:var(--amber); flex-shrink:0; margin-top:6px;"></div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; margin:0;"><strong style="color:var(--white); font-weight:500;">Traducción al inglés</strong> — Si tu licencia no está en inglés, debe ir acompañada de una licencia de conducir internacional <em>o</em> ser traducida por un traductor aprobado por la MVA.</p>
+        </div>
+        <div style="display:flex; gap:0.75rem; align-items:flex-start;">
+          <div style="width:5px; height:5px; background:var(--amber); flex-shrink:0; margin-top:6px;"></div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; margin:0;"><strong style="color:var(--white); font-weight:500;">Curso de alcohol y drogas (3 horas)</strong> — Debes completar este programa educativo antes del trámite. La certificación es válida por un año.</p>
+        </div>
+        <div style="margin-top:0.25rem; padding:0.75rem 1rem; background:rgba(10,22,40,0.5); border-left:2px solid rgba(212,168,32,0.4);">
+          <p style="color:rgba(255,255,255,0.4); font-size:0.82rem; line-height:1.6; font-weight:300; font-style:italic; margin:0;">¿No estás seguro de qué aplica a tu caso? <a href="https://wa.me/16673835637" style="color:var(--amber); text-decoration:none; font-weight:500;">Contáctame</a> y te oriento en minutos.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section id="manejo" style="padding:4rem 2.5rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+  <div class="container">
+    <div class="eyebrow"><div class="e-line"></div><span>Examen práctico</span></div>
+    <h2 class="section-h">Examen de Manejo</h2>
+    <p class="section-p" style="max-width:700px;">El día del examen, el evaluador de la MVA te dará instrucciones en inglés — por eso estoy ahí contigo. Tú solo enfócate en manejar bien.</p>
+
+    <!-- General requirements — most prominent -->
+    <div style="max-width:700px; margin-bottom:2rem;">
+      <p style="font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:1.25rem;">Lo que necesitas el día del examen:</p>
+
+      <div style="display:flex; gap:1.25rem; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; color:var(--amber); min-width:32px; line-height:1.2;">01</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); margin-bottom:0.35rem;">Registro del vehículo</div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; margin:0;">El vehículo que uses para el examen debe tener su registro al día.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:1.25rem; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; color:var(--amber); min-width:32px; line-height:1.2;">02</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); margin-bottom:0.35rem;">Seguro de auto vigente</div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; margin:0;">Prueba de seguro para el vehículo que uses durante el examen.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:1.25rem; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; font-weight:800; color:var(--amber); min-width:32px; line-height:1.2;">03</div>
+        <div>
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--white); margin-bottom:0.35rem;">Vehículo en buen estado</div>
+          <p style="color:var(--muted); font-size:0.9rem; line-height:1.7; font-weight:300; margin:0;">El carro no debe tener luces de advertencia encendidas en el tablero. El evaluador puede rechazar el examen si el vehículo no está en condiciones.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Vehicle CTA -->
+    <div style="max-width:700px; margin-bottom:2.5rem; padding:1.25rem 1.5rem; background:rgba(212,168,32,0.07); border:1px solid rgba(212,168,32,0.2); display:flex; justify-content:space-between; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:0.3rem;">¿No tienes vehículo para el examen?</div>
+        <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; font-weight:300; margin:0;">Yo te presto el mío — listo, asegurado y en perfectas condiciones para que no tengas que preocuparte por nada.</p>
+      </div>
+      <a href="vehiculo.html" style="background:var(--amber); color:var(--ink); padding:0.7rem 1.4rem; font-family:'Barlow Condensed',sans-serif; font-size:0.82rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; white-space:nowrap; flex-shrink:0;">Ver servicio →</a>
+    </div>
+
+    <!-- Permit holder requirements — secondary -->
+    <div style="max-width:700px; margin-bottom:3rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+        <div style="flex:1; height:1px; background:rgba(255,255,255,0.08);"></div>
+        <span style="font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.35);">Solo aplica si tienes permiso de aprendiz (Learner's Permit)</span>
+        <div style="flex:1; height:1px; background:rgba(255,255,255,0.08);"></div>
+      </div>
+      <div style="border:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.02);">
+        <div style="display:flex; gap:1rem; padding:1rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.06); align-items:flex-start;">
+          <div style="width:5px; height:5px; background:rgba(212,168,32,0.5); flex-shrink:0; margin-top:6px;"></div>
+          <p style="color:rgba(255,255,255,0.5); font-size:0.88rem; line-height:1.7; font-weight:300; margin:0;"><strong style="color:rgba(255,255,255,0.7); font-weight:500;">Permiso de aprendiz vigente</strong> — Debes presentarlo el día del examen.</p>
+        </div>
+        <div style="display:flex; gap:1rem; padding:1rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.06); align-items:flex-start;">
+          <div style="width:5px; height:5px; background:rgba(212,168,32,0.5); flex-shrink:0; margin-top:6px;"></div>
+          <p style="color:rgba(255,255,255,0.5); font-size:0.88rem; line-height:1.7; font-weight:300; margin:0;"><strong style="color:rgba(255,255,255,0.7); font-weight:500;">Registro de práctica firmado</strong> — Si aplica, el practice skills log debe estar completado y firmado.</p>
+        </div>
+        <div style="display:flex; gap:1rem; padding:1rem 1.25rem; align-items:flex-start;">
+          <div style="width:5px; height:5px; background:rgba(212,168,32,0.5); flex-shrink:0; margin-top:6px;"></div>
+          <p style="color:rgba(255,255,255,0.5); font-size:0.88rem; line-height:1.7; font-weight:300; margin:0;"><strong style="color:rgba(255,255,255,0.7); font-weight:500;">Certificado de educación vial</strong> — Si tomaste un curso de manejo, lleva la verificación de finalización.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section style="padding:4rem 2.5rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+  <div class="container">
+    <div class="eyebrow"><div class="e-line"></div><span>Preguntas frecuentes</span></div>
+    <h2 class="section-h">¿Tienes dudas?</h2>
+    <p class="section-p" style="max-width:700px;">[Preguntas frecuentes sobre ambos exámenes — a completar contigo]</p>
+  </div>
+</section>
+
+<section class="socials" id="contacto">
+  <div class="socials-bar-inner">
+    <div class="socials-divider">
+      <div class="socials-line"></div>
+      <span class="socials-bar-label">Contáctame</span>
+      <div class="socials-line"></div>
+    </div>
+    <div class="socials-icons">
+      <a href="https://wa.me/16673835637?text=Hola%20Carlos%2C%20me%20interesa%20tu%20servicio." class="social-icon-btn" target="_blank" rel="noopener" title="WhatsApp"><svg width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+      <a href="https://www.facebook.com/InterpretacionMaryland" class="social-icon-btn" target="_blank" rel="noopener" title="Facebook"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+      <a href="https://www.instagram.com/interpretacionmaryland" class="social-icon-btn" target="_blank" rel="noopener" title="Instagram"><svg width="22" height="22" viewBox="0 0 24 24"><defs><radialGradient id="ig2" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><path fill="url(#ig2)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+      <a href="https://www.tiktok.com/@interpretacionmaryland" class="social-icon-btn" target="_blank" rel="noopener" title="TikTok"><svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.75a4.85 4.85 0 01-1.01-.06z"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<button class="chat-btn" onclick="toggleChat()" title="Chatea con el asistente">💬</button>
+<div class="chat-window" id="chatWindow">
+  <div class="chat-flag"><div class="b"></div><div class="a"></div><div class="r"></div><div class="w"></div></div>
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <rect width="36" height="36" rx="18" fill="#F4A261"/>
+  <!-- hair back -->
+  <ellipse cx="18" cy="12" rx="10" ry="9" fill="#3D1C02"/>
+  <!-- neck -->
+  <rect x="15" y="21" width="6" height="5" rx="1" fill="#FDDBB4"/>
+  <!-- body / blazer -->
+  <path d="M6 36 Q6 28 18 26 Q30 28 30 36Z" fill="#9A1520"/>
+  <!-- shirt -->
+  <path d="M13 26 Q18 29 23 26 L22 36 L14 36Z" fill="#fff"/>
+  <!-- face -->
+  <ellipse cx="18" cy="14" rx="8" ry="9" fill="#FDDBB4"/>
+  <!-- hair front -->
+  <path d="M10 10 Q10 4 18 4 Q26 4 26 10 Q24 7 18 7 Q12 7 10 10Z" fill="#3D1C02"/>
+  <!-- side hair -->
+  <path d="M10 10 Q8 14 9 19 Q10 16 11 14Z" fill="#3D1C02"/>
+  <path d="M26 10 Q28 14 27 19 Q26 16 25 14Z" fill="#3D1C02"/>
+  <!-- eyes -->
+  <ellipse cx="14.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <ellipse cx="21.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <circle cx="14.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="21.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="14.9" cy="13.6" r="0.4" fill="#fff"/>
+  <circle cx="21.9" cy="13.6" r="0.4" fill="#fff"/>
+  <!-- eyebrows -->
+  <path d="M12.5 11.5 Q14.5 10.5 16.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M19.5 11.5 Q21.5 10.5 23.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M15 18 Q18 20.5 21 18" stroke="#C47A5A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- earrings -->
+  <circle cx="10.2" cy="16" r="1" fill="#C8900A"/>
+  <circle cx="25.8" cy="16" r="1" fill="#C8900A"/>
+</svg>
+      <div>
+        
+      </div>
+    </div>
+    <button onclick="toggleChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg-wrap">
+    <div class="msg-avatar"><svg width="26" height="26" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <rect width="26" height="26" rx="18" fill="#F4A261"/>
+  <!-- hair back -->
+  <ellipse cx="18" cy="12" rx="10" ry="9" fill="#3D1C02"/>
+  <!-- neck -->
+  <rect x="15" y="21" width="6" height="5" rx="1" fill="#FDDBB4"/>
+  <!-- body / blazer -->
+  <path d="M6 36 Q6 28 18 26 Q30 28 30 36Z" fill="#9A1520"/>
+  <!-- shirt -->
+  <path d="M13 26 Q18 29 23 26 L22 36 L14 36Z" fill="#fff"/>
+  <!-- face -->
+  <ellipse cx="18" cy="14" rx="8" ry="9" fill="#FDDBB4"/>
+  <!-- hair front -->
+  <path d="M10 10 Q10 4 18 4 Q26 4 26 10 Q24 7 18 7 Q12 7 10 10Z" fill="#3D1C02"/>
+  <!-- side hair -->
+  <path d="M10 10 Q8 14 9 19 Q10 16 11 14Z" fill="#3D1C02"/>
+  <path d="M26 10 Q28 14 27 19 Q26 16 25 14Z" fill="#3D1C02"/>
+  <!-- eyes -->
+  <ellipse cx="14.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <ellipse cx="21.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <circle cx="14.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="21.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="14.9" cy="13.6" r="0.4" fill="#fff"/>
+  <circle cx="21.9" cy="13.6" r="0.4" fill="#fff"/>
+  <!-- eyebrows -->
+  <path d="M12.5 11.5 Q14.5 10.5 16.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M19.5 11.5 Q21.5 10.5 23.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M15 18 Q18 20.5 21 18" stroke="#C47A5A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- earrings -->
+  <circle cx="10.2" cy="16" r="1" fill="#C8900A"/>
+  <circle cx="25.8" cy="16" r="1" fill="#C8900A"/>
+</svg></div>
+    <div class="msg-inner">
+      <div class="msg-name">Asistente</div>
+      <div class="chat-msg bot">¡Hola! Soy el asistente de Carlos. ¿En qué te puedo ayudar hoy?</div>
+    </div>
+  </div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="Escríbeme..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+function toggleChat() { document.getElementById('chatWindow').classList.toggle('open'); }
+async function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const messages = document.getElementById('chatMessages');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  // User message wrap
+  const userWrap = document.createElement('div');
+  userWrap.className = 'chat-msg-wrap user-wrap';
+  const userAvatar = document.createElement('div');
+  userAvatar.className = 'msg-avatar-user';
+  userAvatar.textContent = 'TÚ';
+  const userInner = document.createElement('div');
+  userInner.className = 'msg-inner user-inner';
+  const userLabel = document.createElement('div');
+  userLabel.className = 'msg-name user-name';
+  userLabel.textContent = 'Tú';
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.textContent = text;
+  userInner.appendChild(userLabel);
+  userInner.appendChild(userMsg);
+  userWrap.appendChild(userInner);
+  userWrap.appendChild(userAvatar);
+  messages.appendChild(userWrap);
+  // Typing wrap
+  const typingWrap = document.createElement('div');
+  typingWrap.className = 'chat-msg-wrap';
+  const typingAvatarEl = document.createElement('div');
+  typingAvatarEl.className = 'msg-avatar';
+  typingAvatarEl.innerHTML = `<svg width="26" height="26" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <rect width="26" height="26" rx="18" fill="#F4A261"/>
+  <!-- hair back -->
+  <ellipse cx="18" cy="12" rx="10" ry="9" fill="#3D1C02"/>
+  <!-- neck -->
+  <rect x="15" y="21" width="6" height="5" rx="1" fill="#FDDBB4"/>
+  <!-- body / blazer -->
+  <path d="M6 36 Q6 28 18 26 Q30 28 30 36Z" fill="#9A1520"/>
+  <!-- shirt -->
+  <path d="M13 26 Q18 29 23 26 L22 36 L14 36Z" fill="#fff"/>
+  <!-- face -->
+  <ellipse cx="18" cy="14" rx="8" ry="9" fill="#FDDBB4"/>
+  <!-- hair front -->
+  <path d="M10 10 Q10 4 18 4 Q26 4 26 10 Q24 7 18 7 Q12 7 10 10Z" fill="#3D1C02"/>
+  <!-- side hair -->
+  <path d="M10 10 Q8 14 9 19 Q10 16 11 14Z" fill="#3D1C02"/>
+  <path d="M26 10 Q28 14 27 19 Q26 16 25 14Z" fill="#3D1C02"/>
+  <!-- eyes -->
+  <ellipse cx="14.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <ellipse cx="21.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <circle cx="14.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="21.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="14.9" cy="13.6" r="0.4" fill="#fff"/>
+  <circle cx="21.9" cy="13.6" r="0.4" fill="#fff"/>
+  <!-- eyebrows -->
+  <path d="M12.5 11.5 Q14.5 10.5 16.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M19.5 11.5 Q21.5 10.5 23.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M15 18 Q18 20.5 21 18" stroke="#C47A5A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- earrings -->
+  <circle cx="10.2" cy="16" r="1" fill="#C8900A"/>
+  <circle cx="25.8" cy="16" r="1" fill="#C8900A"/>
+</svg>`;
+  const typingMsg = document.createElement('div');
+  typingMsg.className = 'chat-msg bot typing';
+  typingMsg.innerHTML = '<span></span><span></span><span></span>';
+  typingWrap.appendChild(typingAvatarEl);
+  typingWrap.appendChild(typingMsg);
+  messages.appendChild(typingWrap);
+  messages.scrollTop = messages.scrollHeight;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+        system: `Eres Sofia, la asistente virtual de Carlos Suárez, intérprete de manejo en la lista oficial de la MVA de Maryland. Carlos ayuda a clientes hispanohablantes a obtener su licencia de conducir en Maryland.
+
+SERVICIOS Y PRECIOS:
+- Examen Práctico MVA: $120 — Carlos te acompaña durante el examen interpretando las instrucciones del evaluador.
+- Préstamo de Vehículo: $100 — Carlos te presta su vehículo para el día del examen.
+- Orientación & Programación de Cita: GRATIS — Carlos te explica qué documentos necesitas y te agenda la cita en la MVA.
+
+CONTACTO: Teléfono/WhatsApp (667) 383-5637 | Correo: csuarez.interprete@gmail.com
+
+EXAMEN DE CONOCIMIENTO (teórico):
+- 25 preguntas de opción múltiple, 20 minutos, necesitas 22 correctas (88%) para aprobar.
+- Edad mínima: 15 años y 9 meses.
+- Documentos requeridos: (1) ID válida (pasaporte, ID de Maryland, matrícula consular), (2) 2 pruebas de dirección en Maryland, (3) Comprobante de Social Security — se acepta tarjeta oficial, W-2, 1099, 1040, pay stubs o SSA-1099. Sin Social Security se puede usar verificación de impuestos.
+- Si tienes licencia extranjera: necesitas licencia original (vigente o vencida) o registro de manejo oficial, traducción al inglés o licencia internacional, y certificado del curso de alcohol y drogas de 3 horas (válido por 1 año).
+- Recursos de estudio: Manual del Conductor MVA en español disponible en educativo.html. Exámenes de práctica: mvarookie.mva.maryland.gov, epermittest.com/maryland, es.dmv-permit-test.com/maryland.
+
+EXAMEN DE MANEJO (práctico):
+- Necesitas: registro del vehículo al día, seguro vigente, vehículo en buen estado sin luces de advertencia.
+- Si tienes permiso de aprendiz (learner's permit): también necesitas el permiso vigente, registro de práctica firmado (si aplica), y certificado de educación vial (si aplica).
+- Si no tienes vehículo, Carlos te presta el suyo por $100.
+
+SOBRE CARLOS: Es estudiante de Finance en Towson University, bilingüe nativo español-inglés, con experiencia en VITA (preparación de impuestos) y opera un negocio de interpretación aprobado por la MVA de Maryland.
+
+INSTRUCCIONES: Responde en el idioma del visitante (español o inglés). Tono cercano, directo y humano. Respuestas de 2-4 oraciones. Para agendar cita solicita nombre y teléfono e indica que Carlos contactará personalmente. No inventes información que no esté aquí.`,
+        messages: [{ role: 'user', content: text }]
+      })
+    });
+    const data = await res.json();
+    typingWrap.remove();
+    const botWrap = document.createElement('div');
+    botWrap.className = 'chat-msg-wrap';
+    const botAvatarEl = document.createElement('div');
+    botAvatarEl.className = 'msg-avatar';
+    botAvatarEl.innerHTML = `<svg width="26" height="26" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <rect width="26" height="26" rx="18" fill="#F4A261"/>
+  <!-- hair back -->
+  <ellipse cx="18" cy="12" rx="10" ry="9" fill="#3D1C02"/>
+  <!-- neck -->
+  <rect x="15" y="21" width="6" height="5" rx="1" fill="#FDDBB4"/>
+  <!-- body / blazer -->
+  <path d="M6 36 Q6 28 18 26 Q30 28 30 36Z" fill="#9A1520"/>
+  <!-- shirt -->
+  <path d="M13 26 Q18 29 23 26 L22 36 L14 36Z" fill="#fff"/>
+  <!-- face -->
+  <ellipse cx="18" cy="14" rx="8" ry="9" fill="#FDDBB4"/>
+  <!-- hair front -->
+  <path d="M10 10 Q10 4 18 4 Q26 4 26 10 Q24 7 18 7 Q12 7 10 10Z" fill="#3D1C02"/>
+  <!-- side hair -->
+  <path d="M10 10 Q8 14 9 19 Q10 16 11 14Z" fill="#3D1C02"/>
+  <path d="M26 10 Q28 14 27 19 Q26 16 25 14Z" fill="#3D1C02"/>
+  <!-- eyes -->
+  <ellipse cx="14.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <ellipse cx="21.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <circle cx="14.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="21.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="14.9" cy="13.6" r="0.4" fill="#fff"/>
+  <circle cx="21.9" cy="13.6" r="0.4" fill="#fff"/>
+  <!-- eyebrows -->
+  <path d="M12.5 11.5 Q14.5 10.5 16.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M19.5 11.5 Q21.5 10.5 23.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M15 18 Q18 20.5 21 18" stroke="#C47A5A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- earrings -->
+  <circle cx="10.2" cy="16" r="1" fill="#C8900A"/>
+  <circle cx="25.8" cy="16" r="1" fill="#C8900A"/>
+</svg>`;
+    const botInner = document.createElement('div');
+    botInner.className = 'msg-inner';
+    const botLabel = document.createElement('div');
+    botLabel.className = 'msg-name';
+    botLabel.textContent = 'Asistente';
+    const bot = document.createElement('div');
+    bot.className = 'chat-msg bot';
+    bot.textContent = data.content[0].text;
+    botInner.appendChild(botLabel);
+    botInner.appendChild(bot);
+    botWrap.appendChild(botAvatarEl);
+    botWrap.appendChild(botInner);
+    messages.appendChild(botWrap);
+  } catch(e) {
+    typingWrap.remove();
+    const errWrap = document.createElement('div');
+    errWrap.className = 'chat-msg-wrap';
+    const errAv = document.createElement('div');
+    errAv.className = 'msg-avatar';
+    errAv.innerHTML = `<svg width="26" height="26" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <rect width="26" height="26" rx="18" fill="#F4A261"/>
+  <!-- hair back -->
+  <ellipse cx="18" cy="12" rx="10" ry="9" fill="#3D1C02"/>
+  <!-- neck -->
+  <rect x="15" y="21" width="6" height="5" rx="1" fill="#FDDBB4"/>
+  <!-- body / blazer -->
+  <path d="M6 36 Q6 28 18 26 Q30 28 30 36Z" fill="#9A1520"/>
+  <!-- shirt -->
+  <path d="M13 26 Q18 29 23 26 L22 36 L14 36Z" fill="#fff"/>
+  <!-- face -->
+  <ellipse cx="18" cy="14" rx="8" ry="9" fill="#FDDBB4"/>
+  <!-- hair front -->
+  <path d="M10 10 Q10 4 18 4 Q26 4 26 10 Q24 7 18 7 Q12 7 10 10Z" fill="#3D1C02"/>
+  <!-- side hair -->
+  <path d="M10 10 Q8 14 9 19 Q10 16 11 14Z" fill="#3D1C02"/>
+  <path d="M26 10 Q28 14 27 19 Q26 16 25 14Z" fill="#3D1C02"/>
+  <!-- eyes -->
+  <ellipse cx="14.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <ellipse cx="21.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <circle cx="14.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="21.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="14.9" cy="13.6" r="0.4" fill="#fff"/>
+  <circle cx="21.9" cy="13.6" r="0.4" fill="#fff"/>
+  <!-- eyebrows -->
+  <path d="M12.5 11.5 Q14.5 10.5 16.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M19.5 11.5 Q21.5 10.5 23.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M15 18 Q18 20.5 21 18" stroke="#C47A5A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- earrings -->
+  <circle cx="10.2" cy="16" r="1" fill="#C8900A"/>
+  <circle cx="25.8" cy="16" r="1" fill="#C8900A"/>
+</svg>`;
+    const err = document.createElement('div');
+    err.className = 'chat-msg bot';
+    err.textContent = 'Hubo un error. Por favor llama a Carlos al (667) 383-5637.';
+    errWrap.appendChild(errAv);
+    errWrap.appendChild(err);
+    messages.appendChild(errWrap);
+  }
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
+
+<!-- Sofia welcome popup -->
+<div id="sofia-popup" style="display:none; position:fixed; bottom:5.5rem; right:2rem; z-index:9999; width:280px; background:#fff; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.18); overflow:hidden; animation:slideUp 0.4s ease;">
+  <div style="background:linear-gradient(135deg,#0A1628,#142448); padding:1rem 1.1rem; display:flex; align-items:center; gap:0.75rem;">
+    <div style="width:38px; height:38px; flex-shrink:0; border-radius:50%; overflow:hidden; border:2px solid rgba(212,168,32,0.4);"><svg width="38" height="38" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <rect width="36" height="36" rx="18" fill="#F4A261"/>
+  <!-- hair back -->
+  <ellipse cx="18" cy="12" rx="10" ry="9" fill="#3D1C02"/>
+  <!-- neck -->
+  <rect x="15" y="21" width="6" height="5" rx="1" fill="#FDDBB4"/>
+  <!-- body / blazer -->
+  <path d="M6 36 Q6 28 18 26 Q30 28 30 36Z" fill="#9A1520"/>
+  <!-- shirt -->
+  <path d="M13 26 Q18 29 23 26 L22 36 L14 36Z" fill="#fff"/>
+  <!-- face -->
+  <ellipse cx="18" cy="14" rx="8" ry="9" fill="#FDDBB4"/>
+  <!-- hair front -->
+  <path d="M10 10 Q10 4 18 4 Q26 4 26 10 Q24 7 18 7 Q12 7 10 10Z" fill="#3D1C02"/>
+  <!-- side hair -->
+  <path d="M10 10 Q8 14 9 19 Q10 16 11 14Z" fill="#3D1C02"/>
+  <path d="M26 10 Q28 14 27 19 Q26 16 25 14Z" fill="#3D1C02"/>
+  <!-- eyes -->
+  <ellipse cx="14.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <ellipse cx="21.5" cy="14" rx="1.8" ry="1.8" fill="#fff"/>
+  <circle cx="14.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="21.5" cy="14" r="1.1" fill="#3D1C02"/>
+  <circle cx="14.9" cy="13.6" r="0.4" fill="#fff"/>
+  <circle cx="21.9" cy="13.6" r="0.4" fill="#fff"/>
+  <!-- eyebrows -->
+  <path d="M12.5 11.5 Q14.5 10.5 16.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M19.5 11.5 Q21.5 10.5 23.5 11.5" stroke="#3D1C02" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M15 18 Q18 20.5 21 18" stroke="#C47A5A" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- earrings -->
+  <circle cx="10.2" cy="16" r="1" fill="#C8900A"/>
+  <circle cx="25.8" cy="16" r="1" fill="#C8900A"/>
+</svg></div>
+    <div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:0.85rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:#fff;">Sofia</div>
+      <div style="font-size:0.65rem; color:#D4A820; letter-spacing:0.08em; text-transform:uppercase;">Asistente Virtual</div>
+    </div>
+    <button onclick="document.getElementById('sofia-popup').style.display='none'" style="margin-left:auto; background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; font-size:1rem; line-height:1;">✕</button>
+  </div>
+  <div style="padding:1rem 1.1rem 1.2rem;">
+    <p style="font-size:0.9rem; color:#333; line-height:1.6; margin:0 0 1rem;">¡Hola! Soy Sofia 👋 ¿Tienes preguntas sobre el examen de manejo o los servicios de Carlos? ¡Estoy aquí para ayudarte!</p>
+    <button onclick="document.getElementById('sofia-popup').style.display='none'; document.getElementById('chatWindow').classList.add('open')" style="width:100%; background:linear-gradient(135deg,#0A1628,#142448); color:#D4A820; border:none; padding:0.7rem; font-family:'Barlow Condensed',sans-serif; font-size:0.85rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; border-radius:6px;">Chatear con Sofia →</button>
+  </div>
+</div>
+<style>
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+</style>
+<script>
+setTimeout(function() {
+  var popup = document.getElementById('sofia-popup');
+  if (popup && !sessionStorage.getItem('sofia-popup-closed')) {
+    popup.style.display = 'block';
+  }
+}, 3000);
+document.addEventListener('DOMContentLoaded', function() {
+  var closeBtn = document.querySelector('#sofia-popup button');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      sessionStorage.setItem('sofia-popup-closed', '1');
+    });
+  }
+});
+</script>
+
+</body>
+</html>
