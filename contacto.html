@@ -464,7 +464,7 @@
       <!-- AI Integration -->
       <div style="border-left:3px solid var(--amber); padding-left:1.5rem;">
         <div style="font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--amber); margin-bottom:0.6rem;">AI Chatbot Integration — Sofia</div>
-        <p style="color:rgba(255,255,255,0.75); font-size:0.92rem; line-height:1.8; font-weight:300; margin:0 0 1rem;">The site integrates a virtual assistant named <strong style="color:var(--white);">Sofia</strong> across all pages using the Claude API (Anthropic). Sofia runs on the <em>claude-sonnet-4-20250514</em> model and is configured with a custom system prompt that gives her complete knowledge of the business — services, pricing, exam requirements, accepted documents, and contact information.</p>
+        <p style="color:rgba(255,255,255,0.75); font-size:0.92rem; line-height:1.8; font-weight:300; margin:0 0 1rem;">The site integrates a virtual assistant named <strong style="color:var(--white);">Sofia</strong> across all pages using the Claude API (Anthropic). Sofia runs on the <em>claude-sonnet-4-6</em> model and is configured with a custom system prompt that gives her complete knowledge of the business — services, pricing, exam requirements, accepted documents, and contact information.</p>
         <p style="color:rgba(255,255,255,0.75); font-size:0.92rem; line-height:1.8; font-weight:300; margin:0 0 1rem;">The chatbot detects and responds in the visitor's language (Spanish or English), maintains a warm and human tone, and is designed to handle the most common questions without requiring Carlos's direct involvement — freeing his time while delivering 24/7 support to potential clients.</p>
         <p style="color:rgba(255,255,255,0.75); font-size:0.92rem; line-height:1.8; font-weight:300; margin:0;">A Spanish-language welcome pop-up appears 3 seconds after page load on every page, inviting visitors to engage with Sofia. The chat window is persistently accessible in the bottom-right corner across all pages, ensuring users can get help at any point in their browsing experience without disrupting navigation.</p>
       </div>
@@ -663,7 +663,7 @@ async function sendMsg() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+        model: 'claude-sonnet-4-6', max_tokens: 1000,
         system: `Eres Sofia, la asistente virtual de Carlos Suárez, intérprete de manejo en la lista oficial de la MVA de Maryland. Carlos ayuda a clientes hispanohablantes a obtener su licencia de conducir en Maryland.
 
 SERVICIOS Y PRECIOS:
