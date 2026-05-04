@@ -684,7 +684,7 @@ async function sendMsg() {
   messages.appendChild(typingWrap);
   messages.scrollTop = messages.scrollHeight;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://sofia-proxy.carlos8suarez10.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
